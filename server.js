@@ -51,4 +51,8 @@ app.use((err, req, res, next) => {
   res.status(500).render('error', { title: 'Something broke', message: 'An unexpected error occurred.' });
 });
 
-app.listen(PORT, () => console.log(`CampusRooming running on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`CampusRooming running on port ${PORT}`);
+});
