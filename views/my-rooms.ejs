@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<div class="wrap" style="padding-bottom:70px;">
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h1>My listings</h1>
+      <p>Track review status for every room you've submitted.</p>
+    </div>
+    <a href="/rooms/new" class="btn btn--primary">List a room</a>
+  </div>
+
+  <% if (rooms.length === 0) { %>
+    <div class="empty-state">
+      <h3>You haven't listed a room yet</h3>
+      <p>Submit one and it'll show up here while it's reviewed.</p>
+    </div>
+  <% } else { %>
+    <table class="admin-table" style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rooms.forEach(room => { %>
+          <tr>
+            <td><a href="/rooms/<%= room._id %>"><%= room.title %></a></td>
+            <td>$<%= room.price %></td>
+            <td><span class="badge badge--<%= room.status %>"><%= room.status %></span></td>
+            <td class="desc-cell"><%= room.status === 'rejected' ? (room.rejectionReason || '—') : '—' %></td>
+            <td>
+              <form action="/rooms/<%= room._id %>/delete" method="POST" onsubmit="return confirm('Remove this listing?');">
+                <button type="submit" class="btn btn--outline btn--small">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

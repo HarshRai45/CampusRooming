@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+
+<div class="wrap admin-shell">
+  <div class="page-header" style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h1>Admin dashboard</h1>
+      <p>Review new room submissions and manage users.</p>
+    </div>
+    <a href="/admin/users" class="btn btn--outline btn--small">Manage users</a>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__num"><%= stats.pendingCount %></div>
+      <div class="stat-card__label">Pending review</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__num"><%= stats.approvedCount %></div>
+      <div class="stat-card__label">Approved &amp; live</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__num"><%= stats.rejectedCount %></div>
+      <div class="stat-card__label">Rejected</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__num"><%= stats.userCount %></div>
+      <div class="stat-card__label">Registered users</div>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:baseline;">
+    <h3>Newest pending submissions</h3>
+    <a href="/admin/rooms?status=pending" class="btn btn--outline btn--small">View full queue</a>
+  </div>
+
+  <% if (recentPending.length === 0) { %>
+    <div class="empty-state">
+      <h3>Queue is clear</h3>
+      <p>No listings are waiting for review right now.</p>
+    </div>
+  <% } else { %>
+    <table class="admin-table">
+      <thead>
+        <tr><th>Title</th><th>Submitted by</th><th>Price</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% recentPending.forEach(room => { %>
+          <tr>
+            <td><a href="/rooms/<%= room._id %>"><%= room.title %></a></td>
+            <td><%= room.postedBy.name %></td>
+            <td>$<%= room.price %></td>
+            <td>
+              <form action="/admin/rooms/<%= room._id %>/approve" method="POST">
+                <button type="submit" class="btn btn--primary btn--small">Approve</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

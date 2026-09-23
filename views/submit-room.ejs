@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<div class="wrap" style="max-width:720px; padding-bottom:70px;">
+  <div class="page-header">
+    <h1>List a room</h1>
+    <p>Your listing goes to an admin for review before it appears in search. You'll be able to track its status under "My listings."</p>
+  </div>
+
+  <% if (error) { %><div class="alert alert--error"><%= error %></div><% } %>
+
+  <form action="/rooms/new" method="POST" enctype="multipart/form-data">
+    <div class="field">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="e.g. Bright single room near North Gate" value="<%= form.title || '' %>" required />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="roomType">Room type</label>
+        <select id="roomType" name="roomType">
+          <% ['Single','Shared','Studio','Dormitory'].forEach(t => { %>
+            <option value="<%= t %>" <%= form.roomType === t ? 'selected' : '' %>><%= t %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="field">
+        <label for="price">Price per month ($)</label>
+        <input type="number" id="price" name="price" min="0" value="<%= form.price || '' %>" required />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. 14 Elm Street" value="<%= form.location || '' %>" required />
+      </div>
+      <div class="field">
+        <label for="distanceToCampus">Distance to campus</label>
+        <input type="text" id="distanceToCampus" name="distanceToCampus" placeholder="e.g. 5 min walk" value="<%= form.distanceToCampus || '' %>" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" placeholder="What's the room like? Furnishing, natural light, roommates, house rules…" required><%= form.description || '' %></textarea>
+    </div>
+
+    <div class="field">
+      <label for="amenities">Amenities</label>
+      <input type="text" id="amenities" name="amenities" placeholder="Wi-Fi, Laundry, Kitchen access (comma-separated)" value="<%= form.amenities || '' %>" />
+      <p class="hint">Separate each amenity with a comma.</p>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="contactPhone">Contact phone</label>
+        <input type="tel" id="contactPhone" name="contactPhone" value="<%= form.contactPhone || '' %>" />
+      </div>
+      <div class="field">
+        <label for="contactEmail">Contact email</label>
+        <input type="email" id="contactEmail" name="contactEmail" value="<%= form.contactEmail || '' %>" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="images">Photos</label>
+      <input type="file" id="images" name="images" accept="image/png,image/jpeg,image/webp" multiple />
+      <p class="hint">Up to 6 images, 5MB each.</p>
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full">Submit for review</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

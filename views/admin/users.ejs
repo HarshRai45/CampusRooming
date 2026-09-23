@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+
+<div class="wrap admin-shell">
+  <div class="page-header">
+    <h1>Users</h1>
+    <p>Change a user's role. Admins can approve listings; students can only submit them.</p>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.name %></td>
+          <td><%= u.email %></td>
+          <td><span class="badge badge--<%= u.role === 'admin' ? 'approved' : 'pending' %>"><%= u.role %></span></td>
+          <td><%= u.createdAt.toDateString() %></td>
+          <td>
+            <form action="/admin/users/<%= u._id %>/role" method="POST" style="display:flex; gap:6px;">
+              <select name="role" style="width:auto;">
+                <% ['student','lister','admin'].forEach(r => { %>
+                  <option value="<%= r %>" <%= u.role === r ? 'selected' : '' %>><%= r %></option>
+                <% }) %>
+              </select>
+              <button type="submit" class="btn btn--outline btn--small">Update</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

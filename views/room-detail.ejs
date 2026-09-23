@@ -1,0 +1,58 @@
+<%- include('partials/header') %>
+
+<div class="wrap detail">
+  <% if (room.status !== 'approved') { %>
+    <span class="badge badge--<%= room.status %>"><%= room.status %></span>
+    <p style="margin-top:8px;">
+      <% if (room.status === 'pending') { %>This listing is waiting for admin review and isn't public yet.<% } %>
+      <% if (room.status === 'rejected') { %>This listing was rejected<% if (room.rejectionReason) { %>: <%= room.rejectionReason %><% } %>.<% } %>
+    </p>
+  <% } %>
+
+  <div class="room-card__type"><%= room.roomType %></div>
+  <h1><%= room.title %></h1>
+  <p style="color:var(--ink-40); margin-top:-8px;"><%= room.location %><% if (room.distanceToCampus) { %> · <%= room.distanceToCampus %> to campus<% } %></p>
+
+  <div class="detail__grid">
+    <div>
+      <% if (room.images && room.images.length) { %>
+        <div class="detail__gallery">
+          <% room.images.slice(0,4).forEach(img => { %>
+            <img src="<%= img %>" alt="<%= room.title %>" />
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="detail__gallery">
+          <div class="detail__gallery--empty">No photos yet</div>
+        </div>
+      <% } %>
+
+      <h3 style="margin-top:28px;">About this room</h3>
+      <p><%= room.description %></p>
+
+      <% if (room.amenities && room.amenities.length) { %>
+        <h3>Amenities</h3>
+        <ul class="amenity-list">
+          <% room.amenities.forEach(a => { %><li><%= a %></li><% }) %>
+        </ul>
+      <% } %>
+    </div>
+
+    <aside class="side-panel">
+      <div class="side-panel__price">$<%= room.price %> <span style="font-family:var(--sans); font-size:0.9rem; color:var(--ink-40);">/ month</span></div>
+      <dl>
+        <dt>Listed by</dt><dd><%= room.postedBy.name %></dd>
+        <% if (room.contactPhone) { %><dt>Phone</dt><dd><%= room.contactPhone %></dd><% } %>
+        <% if (room.contactEmail) { %><dt>Email</dt><dd><%= room.contactEmail %></dd><% } %>
+      </dl>
+
+      <% if (currentUser && (currentUser.role === 'admin' || String(room.postedBy._id) === currentUser.id)) { %>
+        <form action="/rooms/<%= room._id %>/delete" method="POST" onsubmit="return confirm('Remove this listing?');">
+          <button type="submit" class="btn btn--danger btn--full">Remove listing</button>
+        </form>
+      <% } %>
+    </aside>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

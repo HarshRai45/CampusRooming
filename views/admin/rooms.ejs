@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+
+<div class="wrap admin-shell">
+  <div class="page-header">
+    <h1>Room submissions</h1>
+    <p>Approve listings to make them public, or reject with a reason the lister can see.</p>
+  </div>
+
+  <div class="tabs">
+    <% ['pending','approved','rejected','all'].forEach(s => { %>
+      <a href="/admin/rooms?status=<%= s %>" class="<%= status === s ? 'is-active' : '' %>"><%= s.charAt(0).toUpperCase() + s.slice(1) %></a>
+    <% }) %>
+  </div>
+
+  <% if (rooms.length === 0) { %>
+    <div class="empty-state">
+      <h3>Nothing here</h3>
+      <p>No listings currently have this status.</p>
+    </div>
+  <% } else { %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Submitted by</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rooms.forEach(room => { %>
+          <tr>
+            <td>
+              <a href="/rooms/<%= room._id %>"><%= room.title %></a><br />
+              <span class="hint"><%= room.location %></span>
+            </td>
+            <td><%= room.postedBy.name %><br /><span class="hint"><%= room.postedBy.email %></span></td>
+            <td>$<%= room.price %></td>
+            <td><span class="badge badge--<%= room.status %>"><%= room.status %></span></td>
+            <td>
+              <div class="row-actions">
+                <% if (room.status !== 'approved') { %>
+                  <form action="/admin/rooms/<%= room._id %>/approve" method="POST">
+                    <button type="submit" class="btn btn--primary btn--small">Approve</button>
+                  </form>
+                <% } %>
+                <% if (room.status !== 'rejected') { %>
+                  <form action="/admin/rooms/<%= room._id %>/reject" method="POST" class="reject-form">
+                    <input type="text" name="reason" placeholder="Reason (optional)" />
+                    <button type="submit" class="btn btn--danger btn--small">Reject</button>
+                  </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

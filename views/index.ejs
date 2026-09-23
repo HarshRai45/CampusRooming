@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Find your next room, steps from campus.</h1>
+    <p>Every listing on CampusRooming is checked by an admin before it goes live — so what you see here is real.</p>
+
+    <div class="search-card">
+      <form action="/" method="GET">
+        <div class="field" style="margin-bottom:0;">
+          <label for="q">Search</label>
+          <input type="text" id="q" name="q" placeholder="Location, building, keyword…" value="<%= filters.q %>" />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="type">Room type</label>
+          <select id="type" name="type">
+            <option value="">Any</option>
+            <% ['Single','Shared','Studio','Dormitory'].forEach(t => { %>
+              <option value="<%= t %>" <%= filters.type === t ? 'selected' : '' %>><%= t %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="maxPrice">Max price</label>
+          <input type="number" id="maxPrice" name="maxPrice" placeholder="Any" min="0" value="<%= filters.maxPrice %>" />
+        </div>
+        <button type="submit" class="btn btn--primary">Search</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="results-bar">
+    <div>
+      <span class="results-bar__count"><%= rooms.length %> room<%= rooms.length === 1 ? '' : 's' %> available</span>
+    </div>
+    <form action="/" method="GET" style="display:flex; gap:8px; align-items:center;">
+      <% if (filters.q) { %><input type="hidden" name="q" value="<%= filters.q %>" /><% } %>
+      <% if (filters.type) { %><input type="hidden" name="type" value="<%= filters.type %>" /><% } %>
+      <% if (filters.maxPrice) { %><input type="hidden" name="maxPrice" value="<%= filters.maxPrice %>" /><% } %>
+      <label for="sort" style="margin:0; font-size:0.85rem;">Sort</label>
+      <select id="sort" name="sort" onchange="this.form.submit()" style="width:auto;">
+        <option value="" <%= filters.sort === '' ? 'selected' : '' %>>Newest</option>
+        <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>>Price: low to high</option>
+        <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Price: high to low</option>
+      </select>
+    </form>
+  </div>
+
+  <% if (rooms.length === 0) { %>
+    <div class="empty-state">
+      <h3>No rooms match yet</h3>
+      <p>Try clearing a filter, or check back soon — new listings appear once approved.</p>
+    </div>
+  <% } else { %>
+    <div class="card-grid">
+      <% rooms.forEach(room => { %>
+        <a href="/rooms/<%= room._id %>" class="room-card">
+          <div class="room-card__media">
+            <% if (room.images && room.images.length) { %>
+              <img src="<%= room.images[0] %>" alt="<%= room.title %>" />
+            <% } else { %>
+              No photo yet
+            <% } %>
+          </div>
+          <div class="room-card__body">
+            <div class="room-card__type"><%= room.roomType %></div>
+            <div class="room-card__title"><%= room.title %></div>
+            <div class="room-card__location"><%= room.location %><% if (room.distanceToCampus) { %> · <%= room.distanceToCampus %><% } %></div>
+            <div class="room-card__price">$<%= room.price %> <span>/ month</span></div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>
